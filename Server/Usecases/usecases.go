@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	model "github.com/3Thiago/Client-Server-API/Model"
 	database "github.com/3Thiago/Client-Server-API/Server/Database"
+	model "github.com/3Thiago/Client-Server-API/Server/Model"
 )
 
 func GetCurrencyData(ctx context.Context) (*model.CurrencyData, error) {

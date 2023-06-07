@@ -12,18 +12,20 @@ import (
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080/cotacao", nil)
+	req, err := http.NewRequest("GET", "http://localhost:8080/cotacao", nil)
 	if err != nil {
 		panic(err)
 	}
-	res, err := http.DefaultClient.Do(req)
+	req = req.WithContext(ctx)
+	c := &http.Client{}
+	resp, err := c.Do(req)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	body, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 	CreateFile(string(body))
-
 }
 
 func CreateFile(cotacao string) {

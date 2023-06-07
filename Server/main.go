@@ -11,5 +11,6 @@ func main() {
 	database.CreateTable()
 	http.HandleFunc("/cotacao", handler.GetPricepHandler)
 	http.ListenAndServe(":8080", nil)
+	
 
 }

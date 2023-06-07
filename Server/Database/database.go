@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -33,7 +32,6 @@ func CreateTable() error {
 }
 
 func InsertCurrencyDataInDatabase(
-	ctx context.Context,
 	Code string,
 	Codein string,
 	Name string,
@@ -45,13 +43,11 @@ func InsertCurrencyDataInDatabase(
 	Ask string,
 	Timestamp string,
 	CreateDate string) error {
-
 	db, err := sql.Open("sqlite3", "currencyData.db")
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-	err = db.PingContext(ctx)
 	if err != nil {
 		return err
 	}
@@ -67,13 +63,12 @@ func InsertCurrencyDataInDatabase(
 		Ask        ,
 		Timestamp  ,
 		CreateDate ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	statement, err := db.PrepareContext(ctx, insertCurrencyDataSQL)
+	statement, err := db.Prepare(insertCurrencyDataSQL)
 	if err != nil {
 		return err
 	}
 	defer statement.Close()
-
-	_, err = statement.ExecContext(ctx, Code, Codein, Name, High, Low, VarBid, PctChange, Bid, Ask, Timestamp, CreateDate)
+	_, err = statement.Exec(Code, Codein, Name, High, Low, VarBid, PctChange, Bid, Ask, Timestamp, CreateDate)
 	if err != nil {
 		return err
 	}

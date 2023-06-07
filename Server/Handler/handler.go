@@ -1,20 +1,15 @@
 package handler
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	usecases "github.com/3Thiago/Client-Server-API/Server/Usecases"
 )
 
 func GetPricepHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	ctx, cancel := context.WithTimeout(ctx, 200*time.Millisecond)
-	defer cancel()
-	currencyData, error := usecases.GetCurrencyData(ctx)
+	currencyData, error := usecases.GetCurrencyData()
 	if error != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

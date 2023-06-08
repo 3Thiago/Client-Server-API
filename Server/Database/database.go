@@ -1,7 +1,9 @@
 package database
 
 import (
+	"context"
 	"database/sql"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -43,6 +45,10 @@ func InsertCurrencyDataInDatabase(
 	Ask string,
 	Timestamp string,
 	CreateDate string) error {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
+
 	db, err := sql.Open("sqlite3", "currencyData.db")
 	if err != nil {
 		return err
@@ -68,7 +74,7 @@ func InsertCurrencyDataInDatabase(
 		return err
 	}
 	defer statement.Close()
-	_, err = statement.Exec(Code, Codein, Name, High, Low, VarBid, PctChange, Bid, Ask, Timestamp, CreateDate)
+	_, err = statement.ExecContext(ctx, Code, Codein, Name, High, Low, VarBid, PctChange, Bid, Ask, Timestamp, CreateDate)
 	if err != nil {
 		return err
 	}

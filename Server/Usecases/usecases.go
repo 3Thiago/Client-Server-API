@@ -17,11 +17,11 @@ func GetCurrencyData() (*model.CurrencyData, error) {
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://economia.awesomeapi.com.br/json/last/USD-BRL", nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Print("Error on create request in server: ", err)
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Print("Error on get response in server: ", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -31,6 +31,7 @@ func GetCurrencyData() (*model.CurrencyData, error) {
 	var currencyData model.CurrencyData
 	err = json.Unmarshal(body, &currencyData)
 	if err != nil {
+		log.Print("Error on unmarshal json data: ", err)
 		return nil, err
 	}
 	insertCurrencyData(&currencyData)

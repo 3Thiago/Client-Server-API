@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -46,7 +47,7 @@ func InsertCurrencyDataInDatabase(
 	Timestamp string,
 	CreateDate string) error {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Nanosecond)
 	defer cancel()
 
 	db, err := sql.Open("sqlite3", "currencyData.db")
@@ -54,9 +55,6 @@ func InsertCurrencyDataInDatabase(
 		return err
 	}
 	defer db.Close()
-	if err != nil {
-		return err
-	}
 	insertCurrencyDataSQL := `INSERT INTO currencyData(
 		Code	   ,   
 		Codein     ,
@@ -76,7 +74,10 @@ func InsertCurrencyDataInDatabase(
 	defer statement.Close()
 	_, err = statement.ExecContext(ctx, Code, Codein, Name, High, Low, VarBid, PctChange, Bid, Ask, Timestamp, CreateDate)
 	if err != nil {
+		log.Print("Error on insert data: ", err)
 		return err
+	}else{
+		log.Print("Data inserted with success!")
 	}
 	return nil
 }
